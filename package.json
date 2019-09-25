@@ -1,0 +1,21 @@
+{
+  "name": "@selia/visualizer",
+  "version": "1.3.0",
+  "description": "Base class for all visualizers in Selia",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "selia",
+    "visualization",
+    "vis",
+    "react"
+  ],
+  "author": "CONABIO",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
+  }
+}
