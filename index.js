@@ -2,7 +2,13 @@ class VisualizerBase {
   constructor(config) {
     this.canvas = config.canvas;
     this.itemInfo = config.itemInfo;
-    this.active = config.active || true;
+    
+    if (config.hasOwnProperty('active')) {
+      this.active = config.active
+    } else {
+      this.active = true
+    }
+
     this.activator = config.activator || (() => null);
 
     this.events = this.getEvents();
