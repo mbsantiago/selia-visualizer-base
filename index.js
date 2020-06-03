@@ -4,12 +4,16 @@ class VisualizerBase {
     this.itemInfo = config.itemInfo;
     
     if (config.hasOwnProperty('active')) {
-      this.active = config.active
+      this.active = config.active;
     } else {
-      this.active = true
+      this.active = true;
     }
-
-    this.activator = config.activator || (() => null);
+    
+    if (config.hasOwnProperty('activator')) {
+      this.activator = config.activator;
+    } else {
+      this.activator = () => this.toggleActivate();
+    }
 
     this.events = this.getEvents();
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
