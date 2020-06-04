@@ -2,27 +2,29 @@ class VisualizerBase {
   constructor(config) {
     this.canvas = config.canvas;
     this.itemInfo = config.itemInfo;
-    
-    if (config.hasOwnProperty('active')) {
+
+    if (Object.prototype.hasOwnProperty.call(config, 'active')) {
       this.active = config.active;
     } else {
       this.active = true;
     }
-    
-    if (config.hasOwnProperty('activator')) {
+
+    if (Object.prototype.hasOwnProperty.call(config, 'activator')) {
       this.activator = config.activator;
     } else {
       this.activator = () => this.toggleActivate();
     }
 
     this.events = this.getEvents();
-    this.svg = document.createElementNS("http://www.w3.org/2000/svg", 'svg');
+    this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
     this.adjustSize();
     this.init();
 
     this.bindEvents();
   }
+
+  /* eslint-disable class-methods-use-this */
 
   getEvents() {
     // abstract method
@@ -40,9 +42,13 @@ class VisualizerBase {
     // abstract method
   }
 
+  /* eslint-disable no-unused-vars */
+
   setConfig(configs) {
     // abstract method
   }
+
+  /* eslint-disable no-unused-vars */
 
   renderToolbar() {
     // abstract method
@@ -59,28 +65,30 @@ class VisualizerBase {
     return p;
   }
 
-  validatePoints(p){
+  validatePoints(p) {
     // abstract method
     return p;
   }
 
   emitUpdateEvent() {
-    let event = new CustomEvent('visualizer-update')
-    let canvases = document.querySelectorAll('canvas');
-    canvases.forEach(canvas => canvas.dispatchEvent(event));
+    const event = new CustomEvent('visualizer-update');
+    const canvases = document.querySelectorAll('canvas');
+    canvases.forEach((canvas) => canvas.dispatchEvent(event));
   }
 
+  /* eslint-disable class-methods-use-this */
+
   createPoint(x, y) {
-    let p = this.svg.createSVGPoint();
+    const p = this.svg.createSVGPoint();
     p.x = x;
     p.y = y;
     return p;
   }
 
   adjustSize() {
-    this.canvas.style.width ='100%';
-    this.canvas.style.height='100%';
-    this.canvas.width  = this.canvas.offsetWidth;
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+    this.canvas.width = this.canvas.offsetWidth;
     this.canvas.height = this.canvas.offsetHeight;
   }
 
@@ -96,40 +104,46 @@ class VisualizerBase {
     this.active = !this.active;
   }
 
-
   getMouseEventPosition(event) {
-    let x = event.offsetX || (event.pageX - this.canvas.offsetLeft)
-    let y = event.offsetY || (event.pageY - this.canvas.offsetTop)
+    const x = event.offsetX || (event.pageX - this.canvas.offsetLeft);
+    const y = event.offsetY || (event.pageY - this.canvas.offsetTop);
 
-    return this.createPoint(x, y);
+    return this.pixelToCoords(this.createPoint(x, y));
+  }
+
+  pixelToCoords(p) {
+    return this.createPoint(
+      p.x / this.canvas.width,
+      p.y / this.canvas.height,
+    );
   }
 
   bindEvents() {
-    for (let eventType in this.events) {
+    Object.keys(this.events).forEach((eventType) => {
       let listeners = this.events[eventType];
 
-      if (!(Array.isArray(listeners))){
+      if (!(Array.isArray(listeners))) {
         listeners = [listeners];
       }
 
       listeners.forEach((listener) => {
         this.canvas.addEventListener(eventType, listener, false);
       });
-    }
+    });
   }
 
   unmount() {
-    for (let eventType in this.events) {
+    Object.keys(this.events).forEach((eventType) => {
       let listeners = this.events[eventType];
 
-      if (!(Array.isArray(listeners))){
+      if (!(Array.isArray(listeners))) {
         listeners = [listeners];
       }
 
       listeners.forEach((listener) => {
         this.canvas.removeEventListener(eventType, listener);
       });
-    }
+    });
   }
 }
 
