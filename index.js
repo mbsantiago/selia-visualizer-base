@@ -16,12 +16,17 @@ class VisualizerBase {
     }
 
     this.events = this.getEvents();
-    this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
     this.adjustSize();
     this.init();
 
+    // Bind user defined events to canvas
     this.bindEvents();
+
+    // Add on window size change behaviour, if defined
+    if (typeof this.onWindowResize === 'function') {
+      window.addEventListener('resize', this.onWindowResize.bind(this));
+    }
   }
 
   /* eslint-disable class-methods-use-this */
@@ -79,7 +84,7 @@ class VisualizerBase {
   /* eslint-disable class-methods-use-this */
 
   createPoint(x, y) {
-    const p = this.svg.createSVGPoint();
+    const p = new DOMPoint();
     p.x = x;
     p.y = y;
     return p;
@@ -115,6 +120,13 @@ class VisualizerBase {
     return this.createPoint(
       p.x / this.canvas.width,
       p.y / this.canvas.height,
+    );
+  }
+
+  coordsToPixel(p) {
+    return this.createPoint(
+      p.x * this.canvas.width,
+      p.y * this.canvas.height,
     );
   }
 
