@@ -1,6 +1,6 @@
 {
   "name": "@selia/visualizer",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Base class for all visualizers in Selia",
   "repository": "https://github.com/mbsantiago/selia-visualizer-base",
   "main": "index.js",
