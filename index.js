@@ -178,7 +178,6 @@ class VisualizerBase {
           resolve();
         } else {
           tries += 1;
-          // Will wait for a set time and check again if audio reader is ready
           setTimeout(checkIfReady, CHECK_READY_DELAY);
         }
       };
