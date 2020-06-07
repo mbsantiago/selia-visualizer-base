@@ -1,3 +1,8 @@
+
+const MAX_TRIES_READY = 10000;
+const CHECK_READY_DELAY = 100;
+
+
 class VisualizerBase {
   constructor(config) {
     this.canvas = config.canvas;
@@ -15,10 +20,8 @@ class VisualizerBase {
       this.activator = () => this.toggleActivate();
     }
 
+    this.ready = false;
     this.events = this.getEvents();
-
-    this.adjustSize();
-    this.init();
 
     // Bind user defined events to canvas
     this.bindEvents();
@@ -27,6 +30,9 @@ class VisualizerBase {
     if (typeof this.onWindowResize === 'function') {
       window.addEventListener('resize', this.onWindowResize.bind(this));
     }
+
+    this.adjustSize();
+    this.init();
   }
 
   /* eslint-disable class-methods-use-this */
@@ -155,6 +161,29 @@ class VisualizerBase {
       listeners.forEach((listener) => {
         this.canvas.removeEventListener(eventType, listener);
       });
+    });
+  }
+
+  waitUntilReady() {
+    let tries = 0;
+
+    return new Promise((resolve, reject) => {
+      const checkIfReady = () => {
+        // Will reject the promise after many tries.
+        if (tries > MAX_TRIES_READY) {
+          reject(new Error('Visualizer has taken to long to be ready'));
+        }
+
+        if (this.ready) {
+          resolve();
+        } else {
+          tries += 1;
+          // Will wait for a set time and check again if audio reader is ready
+          setTimeout(checkIfReady, CHECK_READY_DELAY);
+        }
+      };
+
+      checkIfReady();
     });
   }
 }
