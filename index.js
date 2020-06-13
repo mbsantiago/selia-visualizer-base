@@ -15,9 +15,12 @@ class VisualizerBase {
     }
 
     if (Object.prototype.hasOwnProperty.call(config, 'activator')) {
-      this.activator = config.activator;
+      this.activator = () => {
+        this.activate();
+        config.activator();
+      };
     } else {
-      this.activator = () => this.toggleActivate();
+      this.activator = () => this.activate();
     }
 
     this.ready = false;
